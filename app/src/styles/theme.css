@@ -1,0 +1,40 @@
+/* BärCam – dunkles Höhlen-Thema: Braun + Honiggelb. Keine Web-Fonts (offline, schnell). */
+:root {
+  --bg: #15100b;
+  --panel: #1f1812;
+  --panel-2: #2a2018;
+  --line: #3a2d21;
+  --fg: #f3e7d6;
+  --muted: #b09a80;
+  --honey: #f2b233;
+  --honey-ink: #1b1209;
+  --bark: #8a5a2e;
+  --ok: #7fc47a;
+  --warn: #f2b233;
+  --bad: #ef6f5c;
+  --radius: 10px;
+  --font: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Ubuntu", sans-serif;
+  --mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body, #app { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { margin: 0; font-weight: 650; line-height: 1.25; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--honey); outline-offset: 2px; }
+
+.btn { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+.btn:hover { border-color: var(--bark); }
+.btn.primary { background: var(--honey); color: var(--honey-ink); border-color: var(--honey); font-weight: 600; }
+.btn:disabled { opacity: .5; cursor: default; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--mono); }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+.dot.ok { background: var(--ok); } .dot.warn { background: var(--warn); } .dot.bad { background: var(--bad); }
+
+/* Sparmodus: alle teuren Effekte aus */
+.sparmodus *, .sparmodus *::before, .sparmodus *::after { transition: none !important; animation: none !important; box-shadow: none !important; backdrop-filter: none !important; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "baercam"
+version = "0.1.0"
+description = "BärCam-Backend: Animaze-Anbindung, KI-Animation und Stimme"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+  "websockets>=13",
+  "platformdirs>=4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "pyinstaller>=6"]
+
+[project.scripts]
+baercam-backend = "baercam.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["baercam*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "BärCam",
+  "mainBinaryName": "baercam",
+  "version": "../package.json",
+  "identifier": "de.morni.baercam",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "BärCam",
+        "width": 1180,
+        "height": 760,
+        "minWidth": 760,
+        "minHeight": 520,
+        "backgroundColor": "#15100b"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' ipc: http://ipc.localhost ws://127.0.0.1:*; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
+    "publisher": "Morni",
+    "copyright": "MIT-Lizenz",
+    "shortDescription": "Begleit-App für Animaze",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
+    "windows": {
+      "nsis": { "languages": ["German"], "installMode": "currentUser" }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQxNEJEQTlDOTQ2QzgzNDcKUldSSGcyeVVuTnBMMFoySXk1QlVrbUtFNlZRN1B2TG9SaHQzZnNzYkRnbW8rUDRpUlQ0YzdwWnUK",
+      "endpoints": ["https://github.com/MoinMornhart/BaerCam/releases/latest/download/latest.json"],
+      "windows": { "installMode": "passive" }
+    }
+  }
+}

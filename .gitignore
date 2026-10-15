@@ -1,0 +1,36 @@
+# Abhängigkeiten & Builds
+node_modules/
+app/dist/
+app/src-tauri/target/
+app/src-tauri/gen/
+app/src-tauri/binaries/
+backend/build/
+backend/dist/
+*.spec
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.ruff_cache/
+
+# Modelle & Nutzerdaten (liegen im App-Datenordner, nie im Repo)
+models/
+*.onnx
+*.gguf
+*.safetensors
+voices/
+recordings/
+
+# Geheimnisse
+.env
+*.key
+*.key.pub.bak
+
+# System
+.DS_Store
+Thumbs.db
+desktop.ini
+*.icloud
+
+# Python-Paket-Metadaten
+*.egg-info/

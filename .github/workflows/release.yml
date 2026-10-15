@@ -1,0 +1,49 @@
+# Baut den Windows-Installer und veröffentlicht ihn als GitHub-Release (inkl. latest.json für die Update-Funktion).
+# Auslösen: Tag "v0.x.y" pushen.
+name: Release
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with: { workspaces: "app/src-tauri -> target" }
+
+      - name: Backend als Sidecar bauen
+        run: |
+          pip install -e "backend[dev]"
+          powershell -File scripts/build-sidecar.ps1 -Python (Get-Command python).Source
+        shell: pwsh
+
+      - run: npm ci
+        working-directory: app
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          projectPath: app
+          args: --config src-tauri/tauri.bundle.conf.json
+          tagName: ${{ github.ref_name }}
+          releaseName: BärCam ${{ github.ref_name }}
+          releaseBody: |
+            Installer: `BärCam_*_x64-setup.exe` herunterladen und starten.
+            Bestehende Installationen aktualisieren sich über Einstellungen → „Nach Updates suchen“.
+
+            Verfasst mit Claude 🤖
+          releaseDraft: false
+          includeUpdaterJson: true
