@@ -8,6 +8,7 @@ import logging
 import sys
 
 from .server import App, run
+from .services import attach
 from .settings import data_dir
 
 
@@ -22,8 +23,10 @@ def main() -> None:
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
         handlers=[logging.FileHandler(data_dir() / "backend.log", encoding="utf-8"), logging.StreamHandler(sys.stderr)],
     )
+    app = App(token=args.token)
+    attach(app)
     try:
-        asyncio.run(run(App(token=args.token), args.port))
+        asyncio.run(run(app, args.port))
     except KeyboardInterrupt:
         pass
 

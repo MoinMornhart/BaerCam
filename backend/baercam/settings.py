@@ -15,7 +15,7 @@ from typing import Any
 from platformdirs import user_data_dir
 
 DEFAULTS: dict[str, Any] = {
-    "animaze": {"host": "127.0.0.1", "apiPort": 9000, "vmcPort": 39539, "trackerPort": 0},
+    "animaze": {"host": "127.0.0.1", "apiPort": 9000, "vmcPort": 39539, "trackerPort": 9003},
     "performance": {"profile": "auto"},
     "ui": {"reducedEffects": False},
     "updates": {"checkOnStart": True},

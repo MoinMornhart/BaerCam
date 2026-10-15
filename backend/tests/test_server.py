@@ -34,6 +34,27 @@ async def test_handler_exception_becomes_error(tmp_path):
     assert resp["error"] == {"code": "kaputt", "message": "absichtlich"}
 
 
+async def test_stuck_client_does_not_block_events(tmp_path):
+    app = make_app(tmp_path)
+    received = []
+
+    class Stuck:
+        async def send(self, msg):
+            await asyncio.sleep(3600)
+
+        async def close(self):
+            pass
+
+    class Good:
+        async def send(self, msg):
+            received.append(msg)
+
+    stuck, good = Stuck(), Good()
+    app.clients = {stuck, good}
+    await asyncio.wait_for(app.emit("perf.sample", {"cpu": 1}), 3)
+    assert received and stuck not in app.clients and good in app.clients
+
+
 async def test_settings_roundtrip(tmp_path):
     app = make_app(tmp_path)
     await app.dispatch(json.dumps({"id": 1, "method": "settings.update", "params": {"patch": {"animaze": {"apiPort": 9100}}}}))

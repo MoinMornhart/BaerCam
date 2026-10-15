@@ -3,6 +3,9 @@
   import { backend, type BackendState } from "./lib/backend";
   import Placeholder from "./sections/Placeholder.svelte";
   import Settings from "./sections/Settings.svelte";
+  import Animaze from "./sections/Animaze.svelte";
+  import Avatars from "./sections/Avatars.svelte";
+  import Performance from "./sections/Performance.svelte";
 
   type Section = { id: string; label: string; icon: string; stage: number; text: string };
   const sections: Section[] = [
@@ -23,7 +26,8 @@
     { id: "settings", label: "Einstellungen", icon: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19 12l2-1-1-3-2 .5-1.5-1.5L17 5l-3-1-1 2h-2L10 4 7 5l.5 2L6 8.5 4 8l-1 3 2 1v0l-2 1 1 3 2-.5L7.5 17 7 19l3 1 1-2h2l1 2 3-1-.5-2 1.5-1.5 2 .5 1-3z", stage: 0, text: "" },
   ];
 
-  let active = $state("animaze");
+  const fromHash = location.hash.slice(1);
+  let active = $state(sections.some((s) => s.id === fromHash) ? fromHash : "animaze");
   let backendState = $state<BackendState>("startet");
   let version = $state("");
   let reducedEffects = $state(false);
@@ -70,6 +74,12 @@
     <header><h1>{current.label}</h1></header>
     {#if active === "settings"}
       <Settings bind:reducedEffects />
+    {:else if active === "animaze"}
+      <Animaze />
+    {:else if active === "avatars"}
+      <Avatars />
+    {:else if active === "performance"}
+      <Performance />
     {:else}
       <Placeholder stage={current.stage} text={current.text} />
     {/if}

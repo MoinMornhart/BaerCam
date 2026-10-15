@@ -45,6 +45,7 @@ class App:
         self.token = token or secrets.token_urlsafe(24)
         self.methods: dict[str, Handler] = {}
         self.clients: set[ServerConnection] = set()
+        self.startup: list[Callable[[], Awaitable[None]]] = []
         self._register_core()
 
     def method(self, name: str) -> Callable[[Handler], Handler]:
@@ -63,11 +64,16 @@ class App:
         if not self.clients:
             return
         msg = json.dumps({"event": event, "data": data}, ensure_ascii=False)
-        for ws in list(self.clients):
+
+        async def push(ws: ServerConnection) -> None:
+            # Ein hängender Client darf die anderen nie blockieren.
             try:
-                await ws.send(msg)
-            except ConnectionClosed:
+                await asyncio.wait_for(ws.send(msg), 1.0)
+            except (ConnectionClosed, asyncio.TimeoutError):
                 self.clients.discard(ws)
+                asyncio.get_running_loop().create_task(ws.close())
+
+        await asyncio.gather(*(push(ws) for ws in list(self.clients)))
 
     async def dispatch(self, raw: str) -> dict[str, Any]:
         try:
@@ -109,6 +115,8 @@ class App:
 
 async def run(app: App, port: int = 0) -> None:
     async with serve(app.handle, "127.0.0.1", port, max_size=32 * 1024 * 1024) as server:
+        for hook in app.startup:
+            await hook()
         bound = server.sockets[0].getsockname()[1]
         print("BAERCAM_READY " + json.dumps({"port": bound, "token": app.token, "version": __version__}), flush=True)
         await asyncio.get_running_loop().create_future()
