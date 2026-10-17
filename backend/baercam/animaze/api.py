@@ -71,6 +71,8 @@ class AnimazeClient:
                     await self._set_status(True)
                     async for raw in ws:
                         self._on_message(raw)
+                # Sauber geschlossen (z. B. Animaze beendet): sofort melden, nicht erst beim nächsten Versuch
+                await self._set_status(False, "closed")
             except (OSError, ConnectionClosed, InvalidHandshake, InvalidURI, asyncio.TimeoutError, TimeoutError) as e:
                 refused = isinstance(e, OSError) and not isinstance(e, TimeoutError)
                 await self._set_status(False, "refused" if refused else type(e).__name__)

@@ -99,11 +99,13 @@ async def test_client_talks_to_fake_animaze():
             raise AssertionError("Fehler erwartet")
         except AnimazeError as e:
             assert "not found" in str(e)
-    for _ in range(100):
+    # Muss vor dem nächsten Verbindungsversuch (1 s) erkannt sein – unter Windows dauert ein abgelehnter Versuch ~2 s
+    for _ in range(25):
         if not client.connected:
             break
         await asyncio.sleep(0.02)
     assert statuses[0] is True and statuses[-1] is False
+    assert client.last_error == "closed"
     client._task.cancel()
 
 
