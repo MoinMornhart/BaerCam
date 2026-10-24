@@ -1,3 +1,5 @@
+Lies zuerst den Projektstand: @STAND.md
+
 # BärCam – Hinweise für Claude
 
 - Begleit-App für Animaze (Holotech). Tauri 2 + Svelte 5 in `app/`, Python-Backend in `backend/` (Sidecar, JSON-RPC über WebSocket, siehe `backend/baercam/server.py`).
